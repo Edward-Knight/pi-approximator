@@ -1,15 +1,15 @@
-package me.edwardknight.pi;
+package me.edwardknight.pi_approximator;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class PiApproximatorGUI {
+public class GUI {
     private final JFrame frame;
 
     /**
      * Initialises and shows GUI.
      */
-    public PiApproximatorGUI() {
+    public GUI() {
         frame = makeFrame();
     }
 
@@ -21,7 +21,7 @@ public class PiApproximatorGUI {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ignored) {}
 
-        PiApproximatorGUI gui = new PiApproximatorGUI();
+        GUI gui = new GUI();
     }
 
     /**
