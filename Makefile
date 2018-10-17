@@ -25,7 +25,7 @@ jar: build
 jlink: build
 	mkdir -p dist
 	-rm -rf dist/pi-approximator
-	jlink --module-path build --add-modules $(PACKAGE) --output dist/pi-approximator
+	jlink --module-path build --add-modules $(PACKAGE) --launcher launch=$(PACKAGE)/$(MAIN_CLASS) --output dist/pi-approximator/
 
 # target: run - Run the module
 run: build
