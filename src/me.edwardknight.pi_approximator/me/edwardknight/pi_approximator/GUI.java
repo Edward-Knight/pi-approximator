@@ -1,10 +1,25 @@
 package me.edwardknight.pi_approximator;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class GUI {
     private final JFrame frame;
+    private static final Image GITHUB_ICON;
+
+    static {
+        // Load GitHub icon
+        Image icon = null;
+        try {
+            // NB: Could also use ClassLoader.getSystemResource("GitHub-Mark-32px.png")
+            icon = ImageIO.read(GUI.class.getModule().getResourceAsStream("GitHub-Mark-32px.png"));
+        } catch (IOException ignore) {}
+        GITHUB_ICON = icon;
+    }
 
     /**
      * Initialises and shows GUI.
@@ -32,6 +47,8 @@ public class GUI {
         JFrame frame = new JFrame("Pi Approximator");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+        frame.setJMenuBar(makeMenuBar());
+
         // Set minimum size
         frame.pack();
         frame.setMinimumSize(frame.getSize());
@@ -44,5 +61,34 @@ public class GUI {
         // Make visible and return
         frame.setVisible(true);
         return frame;
+    }
+
+    /**
+     * Create and fill a JMenuBar.
+     */
+    private JMenuBar makeMenuBar() {
+        final int SHORTCUT_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+        JMenuBar menuBar = new JMenuBar();
+
+        JMenu helpMenu = new JMenu("Help");
+        menuBar.add(helpMenu);
+
+        JMenuItem gitHubItem = new JMenuItem("Go to GitHub", new ImageIcon(GITHUB_ICON));
+        // todo: work out proper icon size
+        ImageIcon gitHubMenuIcon = new ImageIcon(GITHUB_ICON.getScaledInstance(16, 16, Image.SCALE_SMOOTH), "GitHub logo");
+        gitHubItem.setIcon(gitHubMenuIcon);
+        gitHubItem.addActionListener(e -> browseToGitHub());
+        helpMenu.add(gitHubItem);
+
+        return menuBar;
+    }
+
+    /**
+     * Helper method to browse to project on GitHub.
+     */
+    private void browseToGitHub() {
+        try {
+            Desktop.getDesktop().browse(new URI("https://gitHub.com/Edward-Knight/pi-approximator"));
+        } catch (IOException | URISyntaxException ignore) {}
     }
 }

@@ -7,6 +7,7 @@ MAIN_CLASS = $(PACKAGE).GUI
 build:
 	mkdir -p build
 	javac -d build --module-source-path src `find src -name "*.java"`
+	cp -r res/* build/$(PACKAGE)
 
 # target: clean - Recursively delete ./build and ./dist
 clean:
