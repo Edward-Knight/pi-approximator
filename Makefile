@@ -4,7 +4,7 @@ MAIN_CLASS = $(PACKAGE).GUI
 # todo: look over `jar`, `javac`, and `jlink` command line arguments to make build more minimal
 
 # target: build - Compile the module using javac
-build:
+build: src
 	mkdir -p build
 	javac -d build --module-source-path src `find src -name "*.java"`
 	cp -r res/* build/$(PACKAGE)
