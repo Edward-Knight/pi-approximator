@@ -8,7 +8,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 public class GUI {
-    private final JFrame frame;
     private static final Image GITHUB_ICON;
 
     static {
@@ -20,6 +19,10 @@ public class GUI {
         } catch (IOException ignore) {}
         GITHUB_ICON = icon;
     }
+
+    private final JFrame frame;
+    private final Canvas canvas = new Canvas();
+    private final SidePanel sidePanel = new SidePanel();
 
     /**
      * Initialises and shows GUI.
@@ -48,6 +51,12 @@ public class GUI {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         frame.setJMenuBar(makeMenuBar());
+
+        // Add components
+        Container content = frame.getContentPane();
+        content.setLayout(new BorderLayout());
+        content.add(canvas, BorderLayout.CENTER);
+        content.add(sidePanel, BorderLayout.EAST);
 
         // Set minimum size
         frame.pack();
