@@ -29,6 +29,7 @@ public class GUI {
      */
     public GUI() {
         frame = makeFrame();
+        canvas.redrawCircle();
     }
 
     /**
