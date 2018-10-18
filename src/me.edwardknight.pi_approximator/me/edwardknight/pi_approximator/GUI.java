@@ -98,7 +98,15 @@ public class GUI {
 
     public void addRandomPoint() {
         Point point = canvas.getRandomPoint();
-        canvas.drawPoint(point);
+        if (!canvas.drawPoint(point)) {
+            // haven't finished adding last point yet
+            return;
+        }
+        if (canvas.isHit(point)) {
+            sidePanel.incrementHits();
+        } else {
+            sidePanel.incrementMisses();
+        }
     }
 
     /**
