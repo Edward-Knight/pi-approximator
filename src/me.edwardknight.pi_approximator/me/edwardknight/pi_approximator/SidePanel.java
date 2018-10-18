@@ -9,6 +9,7 @@ public class SidePanel extends JPanel {
             new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
     private final JSpinner missesSpinner = new JSpinner(
             new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
+    private final JLabel piResult = new JLabel("...");
 
     public SidePanel() {
         super();
@@ -21,6 +22,7 @@ public class SidePanel extends JPanel {
     private GroupLayout makeLayout() {
         JLabel hitsLabel = new JLabel("Hits:");
         JLabel missesLabel = new JLabel("Misses:");
+        JLabel piLabel = new JLabel("Pi:");
 
         GroupLayout layout = new GroupLayout(this);
         layout.setAutoCreateGaps(true);
@@ -29,10 +31,12 @@ public class SidePanel extends JPanel {
         layout.setHorizontalGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup()
                     .addComponent(hitsLabel)
-                    .addComponent(missesLabel))
+                    .addComponent(missesLabel)
+                    .addComponent(piLabel))
                 .addGroup(layout.createParallelGroup()
                         .addComponent(hitsSpinner)
-                        .addComponent(missesSpinner))
+                        .addComponent(missesSpinner)
+                        .addComponent(piResult))
         );
 
         layout.setVerticalGroup(layout.createSequentialGroup()
@@ -42,15 +46,29 @@ public class SidePanel extends JPanel {
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(missesLabel)
                         .addComponent(missesSpinner))
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(piLabel)
+                        .addComponent(piResult))
         );
         return layout;
     }
 
     public void incrementHits() {
         hitsSpinner.setValue(hitsSpinner.getNextValue());
+        recalculatePi();
     }
 
     public void incrementMisses() {
         missesSpinner.setValue(missesSpinner.getNextValue());
+        recalculatePi();
+    }
+
+    public void recalculatePi() {
+        double hits = (int) hitsSpinner.getValue();
+        double misses = (int) missesSpinner.getValue();
+        if (hits > 0) {
+            double pi = 4 * (hits / (hits + misses));
+            piResult.setText(String.valueOf(pi));
+        }
     }
 }
