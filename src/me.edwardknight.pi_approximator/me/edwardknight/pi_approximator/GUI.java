@@ -23,6 +23,7 @@ public class GUI {
     private final JFrame frame;
     private final Canvas canvas = new Canvas();
     private final SidePanel sidePanel = new SidePanel();
+    private final Timer timer = new Timer(100, e -> addRandomPoint());
 
     /**
      * Initialises and shows GUI.
@@ -82,6 +83,12 @@ public class GUI {
         JButton testButton = new JButton("Add point");
         testButton.addActionListener(e -> addRandomPoint());
         menuBar.add(testButton);
+        JButton startButton = new JButton("Start adding points");
+        startButton.addActionListener(e -> timer.start());
+        menuBar.add(startButton);
+        JButton stopButton = new JButton("Stop adding points");
+        stopButton.addActionListener(e -> timer.stop());
+        menuBar.add(stopButton);
 
         JMenu helpMenu = new JMenu("Help");
         menuBar.add(helpMenu);
