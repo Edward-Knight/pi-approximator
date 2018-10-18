@@ -16,7 +16,7 @@ public class GUI {
         try {
             // NB: Could also use ClassLoader.getSystemResource("GitHub-Mark-32px.png")
             icon = ImageIO.read(GUI.class.getModule().getResourceAsStream("GitHub-Mark-32px.png"));
-        } catch (IOException ignore) {}
+        } catch (IOException ignored) {}
         GITHUB_ICON = icon;
     }
 
@@ -79,6 +79,9 @@ public class GUI {
     private JMenuBar makeMenuBar() {
         final int SHORTCUT_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
         JMenuBar menuBar = new JMenuBar();
+        JButton testButton = new JButton("Add point");
+        testButton.addActionListener(e -> addRandomPoint());
+        menuBar.add(testButton);
 
         JMenu helpMenu = new JMenu("Help");
         menuBar.add(helpMenu);
@@ -93,12 +96,17 @@ public class GUI {
         return menuBar;
     }
 
+    public void addRandomPoint() {
+        Point point = canvas.getRandomPoint();
+        canvas.drawPoint(point);
+    }
+
     /**
      * Helper method to browse to project on GitHub.
      */
     private void browseToGitHub() {
         try {
             Desktop.getDesktop().browse(new URI("https://gitHub.com/Edward-Knight/pi-approximator"));
-        } catch (IOException | URISyntaxException ignore) {}
+        } catch (IOException | URISyntaxException ignored) {}
     }
 }
