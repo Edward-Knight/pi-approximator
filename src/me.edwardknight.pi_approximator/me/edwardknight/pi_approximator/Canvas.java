@@ -5,8 +5,7 @@ import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.geom.Ellipse2D;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public class Canvas extends JPanel {
@@ -17,16 +16,15 @@ public class Canvas extends JPanel {
 
     private final Random random = new Random();
     /**
-     * The square area of the canvas to draw in.
-     * The area in which the background is drawn.
+     * The image that is drawn onto the canvas.
      */
-    private final Rectangle backgroundSquare = new Rectangle();
-    private final Ellipse2D circle = new Ellipse2D.Double();
-    private final Collection<Point> points = new ArrayList<>();
+    private BufferedImage image;
     /**
-     * Next point to draw, becomes null when point has been drawn.
+     * The offset from which the image should be drawn.
      */
-    private Point nextPoint = null;
+    private int xOffset;
+    private int yOffset;
+    private final Ellipse2D circle = new Ellipse2D.Double();
 
     public Canvas() {
         super();
@@ -47,31 +45,47 @@ public class Canvas extends JPanel {
      * Automatically called whenever the component is resized.
      */
     public void reset() {
-        // recalculate backgroundSquare
+        // recalculate xOffset and yOffset and make new image
         Dimension size = getSize();
         if (size.width < size.height) {
             // pad height
-            int pad = (size.height - size.width) / 2;
-            backgroundSquare.setFrame(0, pad, size.width - 1, size.width - 1);
+            xOffset = 0;
+            yOffset = (size.height - size.width) / 2;
+            image = new BufferedImage(size.width, size.width,
+                                      BufferedImage.TYPE_INT_ARGB);
         } else {
             // pad width
-            int pad = (size.width - size.height) / 2;
-            backgroundSquare.setFrame(pad, 0, size.height - 1, size.height - 1);
+            xOffset = (size.width - size.height) / 2;
+            yOffset = 0;
+            image = new BufferedImage(size.height, size.height,
+                                      BufferedImage.TYPE_INT_ARGB);
         }
 
         // reset circle
-        circle.setFrame(backgroundSquare);
+        circle.setFrame(0, 0, image.getWidth(), image.getHeight());
 
-        // reset points
-        points.clear();
+        // redraw image
+        Graphics2D g2 = image.createGraphics();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                            RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // redraw all
+        // redraw background
+        g2.setColor(COLOR_BACKGROUND);
+        g2.fillRect(0, 0, image.getWidth(), image.getHeight());
+
+        // redraw circle
+        g2.setColor(COLOR_CIRCLE);
+        // we draw the circle slightly smaller so the right and bottom edge show
+        g2.draw(new Ellipse2D.Double(0, 0, circle.getWidth() - 1,
+                                     circle.getHeight() - 1));
+
+        g2.dispose();
         repaint();
     }
 
     public Point getRandomPoint() {
-        return new Point(backgroundSquare.x + random.nextInt(backgroundSquare.width),
-                         backgroundSquare.y + random.nextInt(backgroundSquare.height));
+        return new Point(random.nextInt(image.getWidth()),
+                         random.nextInt(image.getHeight()));
     }
 
     public boolean isHit(Point point) {
@@ -84,55 +98,20 @@ public class Canvas extends JPanel {
      *
      * @return False if already waiting for a point to be drawn.
      */
-    public boolean drawPoint(Point point) {
-        if (nextPoint != null) {
-            // can't draw a new point yet, one still waiting to be drawn
-            return false;
-        }
-        nextPoint = point;
-        // todo: work out a way of just drawing the new point without redrawing everything
+    public void drawPoint(Point point) {
+        Graphics2D g2 = image.createGraphics();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                            RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(isHit(point) ? COLOR_HIT : COLOR_MISS);
+        // todo: add option to change point size
+        g2.fillOval(point.x - 2, point.y - 2, 4, 4);
+        g2.dispose();
         repaint();
-        return true;
     }
 
     @Override
     public void paintComponent(Graphics g) {
-        System.err.println("paintComponent");
         super.paintComponent(g);
-
-        Graphics2D g2 = (Graphics2D) g;
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                            RenderingHints.VALUE_ANTIALIAS_ON);
-
-        // redraw background
-        g2.setColor(COLOR_BACKGROUND);
-        g2.fill(backgroundSquare);
-
-        // redraw circle
-        g2.setColor(COLOR_CIRCLE);
-        g2.draw(circle);
-
-        // redraw all points
-        if (nextPoint != null) {
-            points.add(nextPoint);
-        }
-        for (Point point : points) {
-            g2.setColor(isHit(point) ? COLOR_HIT : COLOR_MISS);
-            // todo: decide on how large to make points
-            g2.fillOval(point.x - 2, point.y - 2, 4, 4);
-        }
-        nextPoint = null;
-    }
-
-    @Override
-    public void update(Graphics g) {
-        System.err.println("update");
-        super.update(g);
-    }
-
-    @Override
-    public void repaint() {
-        System.err.println("repaint");
-        super.repaint();
+        g.drawImage(image, xOffset, yOffset, this);
     }
 }

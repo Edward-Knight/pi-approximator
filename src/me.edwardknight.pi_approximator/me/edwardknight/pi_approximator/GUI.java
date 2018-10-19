@@ -23,7 +23,7 @@ public class GUI {
     private final JFrame frame;
     private final Canvas canvas = new Canvas();
     private final SidePanel sidePanel = new SidePanel();
-    private final Timer timer = new Timer(100, e -> addRandomPoint());
+    private final Timer timer = new Timer(10, e -> addRandomPoint());
 
     /**
      * Initialises and shows GUI.
@@ -105,10 +105,7 @@ public class GUI {
 
     public void addRandomPoint() {
         Point point = canvas.getRandomPoint();
-        if (!canvas.drawPoint(point)) {
-            // haven't finished adding last point yet
-            return;
-        }
+        canvas.drawPoint(point);
         if (canvas.isHit(point)) {
             sidePanel.incrementHits();
         } else {
