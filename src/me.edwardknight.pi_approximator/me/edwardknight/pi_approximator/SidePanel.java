@@ -10,6 +10,7 @@ public class SidePanel extends JPanel {
     private final JSpinner missesSpinner = new JSpinner(
             new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
     private final JLabel piResult = new JLabel("...");
+    private final JLabel accuracyResult = new JLabel("...");
 
     public SidePanel() {
         super();
@@ -23,6 +24,9 @@ public class SidePanel extends JPanel {
         JLabel hitsLabel = new JLabel("Hits:");
         JLabel missesLabel = new JLabel("Misses:");
         JLabel piLabel = new JLabel("Pi:");
+        JLabel accuracyLabel = new JLabel("Accuracy:");
+        hitsSpinner.addChangeListener(e -> recalculatePi());
+        missesSpinner.addChangeListener(e -> recalculatePi());
 
         GroupLayout layout = new GroupLayout(this);
         layout.setAutoCreateGaps(true);
@@ -32,11 +36,13 @@ public class SidePanel extends JPanel {
                 .addGroup(layout.createParallelGroup()
                     .addComponent(hitsLabel)
                     .addComponent(missesLabel)
-                    .addComponent(piLabel))
+                    .addComponent(piLabel)
+                    .addComponent(accuracyLabel))
                 .addGroup(layout.createParallelGroup()
                         .addComponent(hitsSpinner)
                         .addComponent(missesSpinner)
-                        .addComponent(piResult))
+                        .addComponent(piResult)
+                        .addComponent(accuracyResult))
         );
 
         layout.setVerticalGroup(layout.createSequentialGroup()
@@ -49,6 +55,9 @@ public class SidePanel extends JPanel {
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(piLabel)
                         .addComponent(piResult))
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(accuracyLabel)
+                        .addComponent(accuracyResult))
         );
         return layout;
     }
@@ -69,6 +78,13 @@ public class SidePanel extends JPanel {
         if (hits > 0) {
             double pi = 4 * (hits / (hits + misses));
             piResult.setText(String.valueOf(pi));
+            recalculateAccuracy();
         }
+    }
+
+    public void recalculateAccuracy() {
+        double pi = Double.parseDouble(piResult.getText());
+        double accuracy = 100 - ((Math.abs(pi - Math.PI) / Math.PI) * 100);
+        accuracyResult.setText(String.valueOf(accuracy) + "%");
     }
 }
