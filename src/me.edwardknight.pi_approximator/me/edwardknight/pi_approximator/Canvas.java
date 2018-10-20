@@ -60,6 +60,7 @@ public class Canvas extends JPanel {
             image = new BufferedImage(size.height, size.height,
                                       BufferedImage.TYPE_INT_ARGB);
         }
+        setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
 
         // reset circle
         circle.setFrame(0, 0, image.getWidth(), image.getHeight());

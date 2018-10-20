@@ -32,6 +32,8 @@ public class GUI {
         sidePanel = new SidePanel(this);
         frame = makeFrame();
         canvas.reset();
+        // Repack to resize to preferred (square canvas) size
+        frame.pack();
     }
 
     /**
