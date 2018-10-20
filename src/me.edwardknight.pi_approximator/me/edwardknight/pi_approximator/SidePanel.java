@@ -5,15 +5,18 @@ import javax.swing.border.MatteBorder;
 import java.awt.*;
 
 public class SidePanel extends JPanel {
+    private final GUI gui;
     private final JSpinner hitsSpinner = new JSpinner(
             new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
     private final JSpinner missesSpinner = new JSpinner(
             new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
     private final JLabel piResult = new JLabel("...");
     private final JLabel accuracyResult = new JLabel("...");
+    private final JButton playPauseButton = new JButton("⏵");
 
-    public SidePanel() {
+    public SidePanel(GUI gui) {
         super();
+        this.gui = gui;
         // line on west side
         this.setBorder(new MatteBorder(0, 1, 0, 0, SystemColor.activeCaptionBorder));
         // Add components
@@ -25,24 +28,31 @@ public class SidePanel extends JPanel {
         JLabel missesLabel = new JLabel("Misses:");
         JLabel piLabel = new JLabel("Pi:");
         JLabel accuracyLabel = new JLabel("Accuracy:");
+
         hitsSpinner.addChangeListener(e -> recalculatePi());
         missesSpinner.addChangeListener(e -> recalculatePi());
+        playPauseButton.addActionListener(e ->
+                playPauseButton.setText(gui.toggleAddingPoints() ? "⏸" : "⏵"));
+
 
         GroupLayout layout = new GroupLayout(this);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
 
-        layout.setHorizontalGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup()
-                    .addComponent(hitsLabel)
-                    .addComponent(missesLabel)
-                    .addComponent(piLabel)
-                    .addComponent(accuracyLabel))
-                .addGroup(layout.createParallelGroup()
+        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                .addGroup(layout.createSequentialGroup()
+                    .addGroup(layout.createParallelGroup()
+                        .addComponent(hitsLabel)
+                        .addComponent(missesLabel)
+                        .addComponent(piLabel)
+                        .addComponent(accuracyLabel))
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup()
                         .addComponent(hitsSpinner)
                         .addComponent(missesSpinner)
                         .addComponent(piResult)
-                        .addComponent(accuracyResult))
+                        .addComponent(accuracyResult)))
+                .addComponent(playPauseButton)
         );
 
         layout.setVerticalGroup(layout.createSequentialGroup()
@@ -58,6 +68,8 @@ public class SidePanel extends JPanel {
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(accuracyLabel)
                         .addComponent(accuracyResult))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(playPauseButton)
         );
         return layout;
     }

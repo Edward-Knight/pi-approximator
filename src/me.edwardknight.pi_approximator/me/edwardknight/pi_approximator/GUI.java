@@ -22,13 +22,14 @@ public class GUI {
 
     private final JFrame frame;
     private final Canvas canvas = new Canvas();
-    private final SidePanel sidePanel = new SidePanel();
+    private final SidePanel sidePanel;
     private final Timer timer = new Timer(10, e -> addRandomPoint());
 
     /**
      * Initialises and shows GUI.
      */
     public GUI() {
+        sidePanel = new SidePanel(this);
         frame = makeFrame();
         canvas.reset();
     }
@@ -83,12 +84,6 @@ public class GUI {
         JButton testButton = new JButton("Add point");
         testButton.addActionListener(e -> addRandomPoint());
         menuBar.add(testButton);
-        JButton startButton = new JButton("Start adding points");
-        startButton.addActionListener(e -> timer.start());
-        menuBar.add(startButton);
-        JButton stopButton = new JButton("Stop adding points");
-        stopButton.addActionListener(e -> timer.stop());
-        menuBar.add(stopButton);
 
         JMenu helpMenu = new JMenu("Help");
         menuBar.add(helpMenu);
@@ -110,6 +105,20 @@ public class GUI {
             sidePanel.incrementHits();
         } else {
             sidePanel.incrementMisses();
+        }
+    }
+
+    /**
+     * Start or stop the timer repeatedly adding points.
+     * @return false if the timer was stopped, true if the timer was started.
+     */
+    public boolean toggleAddingPoints() {
+        if(timer.isRunning()) {
+            timer.stop();
+            return false;
+        } else {
+            timer.start();
+            return true;
         }
     }
 
